@@ -9,7 +9,9 @@ end open
 
 on rename_sanitize(inputFiles)
 
-    if length of inputFiles equals 0 then return
+    set lengthFiles to length of inputFiles
+
+    if lengthFiles equals 0 then return
 
     tell application "Finder"
 
@@ -17,6 +19,8 @@ on rename_sanitize(inputFiles)
         repeat with inputFile in inputFiles
             if the URL of inputFile ends with "/" then return
         end repeat
+
+        display dialog "Are you sure you want to rename these " & lengthFiles & " files?" with icon caution
 
         set homePath to the POSIX path of (get path to home folder)
         set renameCommand to "/usr/local/bin/python " & homePath & ".local/bin/rename-sanitize"
@@ -32,17 +36,12 @@ on rename_sanitize(inputFiles)
         --Convert filenames to file objects
         set renamedFiles to {}
         repeat with renamedFilename in renamedFilenames
-            set end of renamedFiles to POSIX File (renamedFilename)
+            set end of renamedFiles to (my POSIX file renamedFilename)
         end repeat
 
         --Select the files that were acted on
-        activate
-        try
-            select every item of renamedFiles
-        on error errMsg number errNum
-            display alert "Could not make selection (" & errNum & "):" message errMsg as critical
-            return
-        end try
+        reveal renamedFiles
+
     end tell
 
 end rename_sanitize
