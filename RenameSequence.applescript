@@ -43,14 +43,12 @@ on rename_sequence(inputFiles)
         set homePath to the POSIX path of (get path to home folder)
         set renameCommand to "/usr/local/bin/python " & homePath & ".local/bin/rename-sequence"
 
-        get_number("Enter start number:", 1) of me
-        set theStart to result as number
+        set theStart to get_number("Enter start number:", 1)
 
         set thePrefix to (display dialog "Enter prefix:" default answer "" with icon note)
         set theSuffix to (display dialog "Enter suffix:" default answer "" with icon note)
 
-        get_number("Enter sequence width (0 = auto):", 0)
-        set theWidth to result as number
+        set theWidth to get_number("Enter sequence width (0 = auto):", 0)
 
         set renameCommand to renameCommand & " -s " & theStart
         set renameCommand to renameCommand & " -w " & theWidth
