@@ -8,6 +8,7 @@ on drop(theFiles)
 end drop
 
 on set_favorites(theFiles)
+    display dialog "Are you sure you want to add these " & (length of theFiles) & " wallpapers?" with icon caution
     tell application "Finder"
         set picsFolder to folder "Pictures" of home
         if not (exists folder "Wallpapers" of picsFolder) then
