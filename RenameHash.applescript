@@ -3,53 +3,41 @@ on run
     rename_hash(inputFiles)
 end run
 
-on open (inputFiles)
+on open(inputFiles)
     rename_hash(inputFiles)
 end open
 
-on rename_hash(inputFiles)
-
-    set lengthFiles to length of inputFiles
-
-    if lengthFiles is equal to 0 then return
-
+on only_regular_files(theFiles)
+    set theFilesRegular to {}
     tell application "Finder"
-
-        --Only rename files
-        repeat with inputFile in inputFiles
-            if the URL of inputFile ends with "/" then return
+        repeat with theFile in theFiles
+            if the URL of theFile does not end with "/" then
+                set end of theFilesRegular to theFile
+            end if
         end repeat
+    end tell
+    return theFilesRegular
+end only_regular_files
 
-        display dialog "Are you sure you want to rename these " & lengthFiles & " files?" with icon caution
-
+on rename_hash(inputFiles)
+    set inputFiles to my only_regular_files(inputFiles)
+    if length of inputFiles is equal to 0 then return
+    tell application "Finder"
+        display dialog "Are you sure you want to rename these " & (length of inputFiles) & " files?" with icon caution
         set homePath to the POSIX path of (get path to home folder)
         set renameCommand to "/usr/local/bin/python " & homePath & ".local/bin/rename-hash"
-
-        --Get hash algorithm from user
         set hashTypes to paragraphs of (do shell script renameCommand & " -L")
         set hashType to (choose from list hashTypes with prompt "Choose hash algorithm:")
-
         if hashType is false then return
-
         set renameCommand to renameCommand & " -H " & hashType
-
-        --Build command arguments with properly quoted filenames
         repeat with inputFile in inputFiles
             set renameCommand to renameCommand & " " & quoted form of POSIX path of (inputFile as alias)
         end repeat
-
-        --Command outputs filenames (one per line)
         set renamedFilenames to paragraphs of (do shell script renameCommand)
-
-        --Convert filenames to file objects
         set renamedFiles to {}
         repeat with renamedFilename in renamedFilenames
             set end of renamedFiles to (my POSIX file renamedFilename)
         end repeat
-
-        --Select the files that were acted on
         reveal renamedFiles
-
     end tell
-
 end rename_hash

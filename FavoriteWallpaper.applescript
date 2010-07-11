@@ -3,9 +3,9 @@ on run
     set_favorites(theFiles)
 end run
 
-on drop(theFiles)
+on open(theFiles)
     set_favorites(theFiles)
-end drop
+end open
 
 on set_favorites(theFiles)
     display dialog "Are you sure you want to add these " & (length of theFiles) & " wallpapers?" with icon caution

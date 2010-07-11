@@ -3,7 +3,7 @@ on run
     rename_sequence(inputFiles)
 end run
 
-on open (inputFiles)
+on open(inputFiles)
     rename_sequence(inputFiles)
 end open
 
@@ -26,53 +26,28 @@ on get_number(thePrompt, theDefault)
 end get_number
 
 on rename_sequence(inputFiles)
-
-    set lengthFiles to length of inputFiles
-
-    if lengthFiles equals 0 then return
-
+    if length of inputFiles equals 0 then return
     tell application "Finder"
-
-        --Only rename files
-        repeat with inputFile in inputFiles
-            if the URL of inputFile ends with "/" then return
-        end repeat
-
-        display dialog "Are you sure you want to rename these " & lengthFiles & " files?" with icon caution
-
+        display dialog "Are you sure you want to rename these " & (length of inputFiles) & " files?" with icon caution
         set homePath to the POSIX path of (get path to home folder)
         set renameCommand to "/usr/local/bin/python " & homePath & ".local/bin/rename-sequence"
-
-        set theStart to get_number("Enter start number:", 1)
-
+        set theStart to my get_number("Enter start number:", 1)
         set thePrefix to (display dialog "Enter prefix:" default answer "" with icon note)
         set theSuffix to (display dialog "Enter suffix:" default answer "" with icon note)
-
-        set theWidth to get_number("Enter sequence width (0 = auto):", 0)
-
+        set theWidth to my get_number("Enter sequence width (0 = auto):", 0)
         set renameCommand to renameCommand & " -s " & theStart
         set renameCommand to renameCommand & " -w " & theWidth
         set renameCommand to renameCommand & " -P " & quoted form of thePrefix
         set renameCommand to renameCommand & " -S " & quoted form of theSuffix
-
-        --Build command arguments with properly quoted filenames
         repeat with inputFile in inputFiles
             set renameCommand to renameCommand & " " & quoted form of POSIX path of inputFile
         end repeat
-
-        --Command outputs filenames (one per line)
         set renamedFilenames to paragraphs of (do shell script renameCommand)
-
-        --Convert filenames to file objects
         set renamedFiles to {}
         repeat with renamedFilename in renamedFilenames
             set end of renamedFiles to (my POSIX file renamedFilename)
         end repeat
-
-        --Select the files that were acted on
         reveal renamedFiles
-
     end tell
-
 end rename_sequence
 

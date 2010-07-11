@@ -14,7 +14,7 @@ on is_app_running(appName)
 end is_app_running
 
 on open_in_iterm(theFolder)
-    set wasRunning to is_app_running("iTerm")
+    set wasRunning to my is_app_running("iTerm")
     tell application "iTerm"
         activate
         tell the first terminal

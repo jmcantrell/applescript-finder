@@ -3,9 +3,9 @@ on run
     move_to_folder(theFiles)
 end run
 
-on drop(theFiles)
+on open(theFiles)
     move_to_folder(theFiles)
-end drop
+end open
 
 on get_required(thePrompt, theDefault)
     set thePrefix to ""
@@ -26,7 +26,7 @@ end get_required
 
 on move_to_folder(theFiles)
     if length of theFiles is equal to 0 then return
-    set folderName to get_required("Enter folder name:", "")
+    set folderName to my get_required("Enter folder name:", "")
     tell application "Finder"
         set baseFolder to folder of the front window
         if not (exists folder folderName of baseFolder) then
