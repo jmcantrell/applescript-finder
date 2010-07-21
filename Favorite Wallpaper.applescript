@@ -12,9 +12,9 @@ on set_favorites(theFiles)
     tell application "Finder"
         set picsFolder to folder "Pictures" of home
         if not (exists folder "Wallpapers" of picsFolder) then
-            make new folder at picsFolder with properties {name:"Wallpapers"}
+            make new folder at picsFolder with properties {name:"Favorite Wallpapers"}
         end if
-        set favsFolder to folder "Wallpapers" of picsFolder
+        set favsFolder to folder "Favorite Wallpapers" of picsFolder
         repeat with theFile in theFiles
             if kind of theFile ends with " image" then
                 make new alias file at favsFolder to theFile
