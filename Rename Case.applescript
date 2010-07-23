@@ -7,6 +7,18 @@ on open(inputFiles)
     rename_case(inputFiles)
 end open
 
+on only_regular_files(theFiles)
+    set theFilesRegular to {}
+    tell application "Finder"
+        repeat with theFile in theFiles
+            if the URL of theFile does not end with "/" then
+                set end of theFilesRegular to theFile
+            end if
+        end repeat
+    end tell
+    return theFilesRegular
+end only_regular_files
+
 on rename_case(inputFiles)
     set inputFiles to my only_regular_files(inputFiles)
     if length of inputFiles is equal to 0 then return
