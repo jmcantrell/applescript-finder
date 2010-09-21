@@ -30,7 +30,7 @@ on rename_sequence(inputFiles)
     tell application "Finder"
         display dialog "Are you sure you want to rename these " & (length of inputFiles) & " files?" with icon caution
         set homePath to the POSIX path of (get path to home folder)
-        set renameCommand to "/usr/local/bin/python " & homePath & ".local/bin/rename-sequence"
+        set renameCommand to "/Library/Frameworks/Python.framework/Versions/Current/bin/python " & homePath & ".local/bin/rename-sequence"
         set theStart to my get_number("Enter start number:", 1)
         set thePrefix to (display dialog "Enter prefix:" default answer "" with icon note)
         set theSuffix to (display dialog "Enter suffix:" default answer "" with icon note)
