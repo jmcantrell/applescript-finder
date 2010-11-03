@@ -10,14 +10,14 @@ end open
 on set_favorites(theFiles)
     display dialog "Are you sure you want to add these " & (length of theFiles) & " wallpapers?" with icon caution
     tell application "Finder"
-        set picsFolder to folder "Pictures" of home
+        set picsFolder to folder "Dropbox" of home
         if not (exists folder "Wallpapers" of picsFolder) then
-            make new folder at picsFolder with properties {name:"Favorite Wallpapers"}
+            make new folder at picsFolder with properties {name:"Wallpapers"}
         end if
-        set favsFolder to folder "Favorite Wallpapers" of picsFolder
+        set favsFolder to folder "Wallpapers" of picsFolder
         repeat with theFile in theFiles
             if kind of theFile ends with " image" then
-                make new alias file at favsFolder to theFile
+                duplicate theFile to favsFolder
             end if
         end repeat
     end tell
