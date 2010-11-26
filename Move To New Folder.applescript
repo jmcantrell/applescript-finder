@@ -29,13 +29,11 @@ on move_to_folder(theFiles)
     set folderName to my get_required("Enter folder name:", "")
     tell application "Finder"
         set baseFolder to folder of the front window
-        if not (exists folder folderName of baseFolder) then
-            make new folder at baseFolder with properties {name:folderName}
-        end if
-        set theFolder to folder folderName of baseFolder
+        set thePath to (POSIX path of (baseFolder as alias) & folderName)
+        do shell script "mkdir -p " & quoted form of thePath
+        set theFolder to ((POSIX file thePath) as alias)
         repeat with theFile in theFiles
             move theFile to theFolder
         end repeat
-        reveal theFolder
     end tell
 end move_to_folder
