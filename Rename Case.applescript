@@ -25,7 +25,7 @@ on rename_case(inputFiles)
     tell application "Finder"
         display dialog "Are you sure you want to rename these " & (length of inputFiles) & " files?" with icon caution
         set homePath to the POSIX path of (get path to home folder)
-        set renameCommand to "/Library/Frameworks/Python.framework/Versions/Current/bin/python " & homePath & ".local/bin/rename-case"
+        set renameCommand to "/usr/local/bin/python " & homePath & ".local/bin/rename-case"
         set caseTypes to paragraphs of (do shell script renameCommand & " -L")
         set caseType to (choose from list caseTypes with prompt "Choose case:")
         if caseType is false then return

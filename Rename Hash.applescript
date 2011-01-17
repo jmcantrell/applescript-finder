@@ -25,7 +25,7 @@ on rename_hash(inputFiles)
     tell application "Finder"
         display dialog "Are you sure you want to rename these " & (length of inputFiles) & " files?" with icon caution
         set homePath to the POSIX path of (get path to home folder)
-        set renameCommand to "/Library/Frameworks/Python.framework/Versions/Current/bin/python " & homePath & ".local/bin/rename-hash"
+        set renameCommand to "/usr/local/bin/python " & homePath & ".local/bin/rename-hash"
         set hashTypes to paragraphs of (do shell script renameCommand & " -L")
         set hashType to (choose from list hashTypes with prompt "Choose hash algorithm:")
         if hashType is false then return

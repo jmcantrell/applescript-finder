@@ -12,7 +12,7 @@ on rename_sanitize(inputFiles)
     tell application "Finder"
         display dialog "Are you sure you want to rename these " & (length of inputFiles) & " files?" with icon caution
         set homePath to the POSIX path of (get path to home folder)
-        set renameCommand to "/Library/Frameworks/Python.framework/Versions/Current/bin/python " & homePath & ".local/bin/rename-sanitize"
+        set renameCommand to "/usr/local/bin/python " & homePath & ".local/bin/rename-sanitize"
         repeat with inputFile in inputFiles
             set renameCommand to renameCommand & " " & quoted form of POSIX path of inputFile
         end repeat
