@@ -1,43 +1,56 @@
-on run
-    tell application "Finder" to set inputFiles to selection
-    rename_hash(inputFiles)
-end run
-
-on open(inputFiles)
-    rename_hash(inputFiles)
-end open
-
-on only_regular_files(theFiles)
-    set theFilesRegular to {}
+on regular_files(_files)
+    set _regular to {}
     tell application "Finder"
-        repeat with theFile in theFiles
-            if the URL of theFile does not end with "/" then
-                set end of theFilesRegular to theFile
+        repeat with _file in _files
+            if the URL of _file does not end with "/" then
+                set end of _regular to _file
             end if
         end repeat
     end tell
-    return theFilesRegular
-end only_regular_files
+    return _regular
+end regular_files
 
-on rename_hash(inputFiles)
-    set inputFiles to my only_regular_files(inputFiles)
-    if length of inputFiles is equal to 0 then return
+on paths_to_files(_paths)
+    set _files to {}
+    repeat with _path in _paths
+        set end of _files to POSIX file _path
+    end repeat
+    return _files
+end paths_to_files
+
+on rename_hash(_files)
+
+    set _files to regular_files(_files)
+    if count of _files is equal to 0 then return
+
     tell application "Finder"
-        display dialog "Are you sure you want to rename these " & (length of inputFiles) & " files?" with icon caution
-        set homePath to the POSIX path of (get path to home folder)
-        set renameCommand to "/usr/local/bin/python " & homePath & ".local/bin/rename-hash"
-        set hashTypes to paragraphs of (do shell script renameCommand & " -L")
-        set hashType to (choose from list hashTypes with prompt "Choose hash algorithm:")
-        if hashType is false then return
-        set renameCommand to renameCommand & " -H " & hashType
-        repeat with inputFile in inputFiles
-            set renameCommand to renameCommand & " " & quoted form of POSIX path of (inputFile as alias)
+        display dialog "Are you sure you want to rename these " & (count of _files) & " files?" with icon caution
+
+        set _command to "rename-hash"
+
+        set _types to paragraphs of (do shell script _command & " -L")
+
+        set _type to (choose from list _types with prompt "Choose hash algorithm:")
+        if _type is false then return
+
+        set _command to _command & " -H " & _type
+
+        repeat with _file in _files
+            set _command to _command & " " & quoted form of (POSIX path of (_file as alias))
         end repeat
-        set renamedFilenames to paragraphs of (do shell script renameCommand)
-        set renamedFiles to {}
-        repeat with renamedFilename in renamedFilenames
-            set end of renamedFiles to (my POSIX file renamedFilename)
-        end repeat
-        reveal renamedFiles
+
+        set _new_files to paragraphs of (do shell script _command)
+
+        reveal my paths_to_files(_new_files)
     end tell
+
 end rename_hash
+
+on open (_files)
+    rename_hash(_files)
+end open
+
+on run
+    tell application "Finder" to set _files to selection
+    rename_hash(_files)
+end run

@@ -1,43 +1,54 @@
-on run
-    tell application "Finder" to set inputFiles to selection
-    rename_case(inputFiles)
-end run
-
-on open(inputFiles)
-    rename_case(inputFiles)
-end open
-
-on only_regular_files(theFiles)
-    set theFilesRegular to {}
+on regular_files(_files)
+    set _regular to {}
     tell application "Finder"
-        repeat with theFile in theFiles
-            if the URL of theFile does not end with "/" then
-                set end of theFilesRegular to theFile
+        repeat with _file in _files
+            if the URL of _file does not end with "/" then
+                set end of _regular to _file
             end if
         end repeat
     end tell
-    return theFilesRegular
-end only_regular_files
+    return _regular
+end regular_files
 
-on rename_case(inputFiles)
-    set inputFiles to my only_regular_files(inputFiles)
-    if length of inputFiles is equal to 0 then return
+on paths_to_files(_paths)
+    set _files to {}
+    repeat with _path in _paths
+        set end of _files to POSIX file _path
+    end repeat
+    return _files
+end paths_to_files
+
+on rename_case(_files)
+
+    set _files to regular_files(_files)
+    if (count of _files) is equal to 0 then return
+
     tell application "Finder"
-        display dialog "Are you sure you want to rename these " & (length of inputFiles) & " files?" with icon caution
-        set homePath to the POSIX path of (get path to home folder)
-        set renameCommand to "/usr/local/bin/python " & homePath & ".local/bin/rename-case"
-        set caseTypes to paragraphs of (do shell script renameCommand & " -L")
-        set caseType to (choose from list caseTypes with prompt "Choose case:")
-        if caseType is false then return
-        set renameCommand to renameCommand & " -C " & caseType
-        repeat with inputFile in inputFiles
-            set renameCommand to renameCommand & " " & quoted form of POSIX path of (inputFile as alias)
+        display dialog "Are you sure you want to rename these " & (count of _files) & " files?" with icon caution
+
+        set _command to "rename-case"
+
+        set _cases to paragraphs of (do shell script _command & " -L")
+
+        set _case to (choose from list _cases with prompt "Choose case:")
+        if _case is false then return
+
+        set _command to _command & " -C " & _case
+
+        repeat with _file in _files
+            set _command to _command & " " & quoted form of (POSIX path of (_file as alias))
         end repeat
-        set renamedFilenames to paragraphs of (do shell script renameCommand)
-        set renamedFiles to {}
-        repeat with renamedFilename in renamedFilenames
-            set end of renamedFiles to (my POSIX file renamedFilename)
-        end repeat
-        reveal renamedFiles
+
+        reveal my paths_to_files(paragraphs of (do shell script _command))
     end tell
+
 end rename_case
+
+on open (_files)
+    rename_case(_files)
+end open
+
+on run
+    tell application "Finder" to set _files to selection
+    rename_case(_files)
+end run

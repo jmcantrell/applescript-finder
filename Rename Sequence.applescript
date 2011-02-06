@@ -1,53 +1,63 @@
-on run
-    tell application "Finder" to set inputFiles to selection
-    rename_sequence(inputFiles)
-end run
+on paths_to_files(_paths)
+    set _files to {}
+    repeat with _path in _paths
+        set end of _files to POSIX file _path
+    end repeat
+    return _files
+end paths_to_files
 
-on open(inputFiles)
-    rename_sequence(inputFiles)
-end open
-
-on get_number(thePrompt, theDefault)
-    set thePrefix to ""
-    set theIcon to note
+on get_number(_prompt, _default)
+    if _prompt = "" then set _prompt to "Enter number:"
+    set _prefix to ""
+    set _icon to note
     repeat
-        display dialog thePrefix & thePrompt default answer theDefault with icon theIcon
-        set theNumber to text returned of result
+        display dialog _prefix & _prompt default answer _default with icon _icon
+        set _number to text returned of result
         try
-            if theNumber = "" then error
-            set theNumber to theNumber as number
+            if _number = "" then error
+            set _number to _number as number
             exit repeat
         on error
-            set thePrefix to "INVALID ENTRY! "
-            set theIcon to stop
+            set _prefix to "INVALID ENTRY! "
+            set _icon to stop
         end try
     end repeat
-    return theNumber
+    return _number
 end get_number
 
-on rename_sequence(inputFiles)
-    if length of inputFiles equals 0 then return
+on rename_sequence(_files)
+
+    if count of _files equals 0 then return
+
     tell application "Finder"
-        display dialog "Are you sure you want to rename these " & (length of inputFiles) & " files?" with icon caution
-        set homePath to the POSIX path of (get path to home folder)
-        set renameCommand to "/usr/local/bin/python " & homePath & ".local/bin/rename-sequence"
-        set theStart to my get_number("Enter start number:", 1)
-        set thePrefix to (display dialog "Enter prefix:" default answer "" with icon note)
-        set theSuffix to (display dialog "Enter suffix:" default answer "" with icon note)
-        set theWidth to my get_number("Enter sequence width (0 = auto):", 0)
-        set renameCommand to renameCommand & " -s " & theStart
-        set renameCommand to renameCommand & " -w " & theWidth
-        set renameCommand to renameCommand & " -P " & quoted form of thePrefix
-        set renameCommand to renameCommand & " -S " & quoted form of theSuffix
-        repeat with inputFile in inputFiles
-            set renameCommand to renameCommand & " " & quoted form of POSIX path of inputFile
+        display dialog "Are you sure you want to rename these " & (count of _files) & " files?" with icon caution
+
+        set _command to "rename-sequence"
+
+        set _start to my get_number("Enter start number:", 1)
+        set _prefix to (display dialog "Enter prefix:" default answer "" with icon note)
+        set _suffix to (display dialog "Enter suffix:" default answer "" with icon note)
+        set _width to my get_number("Enter sequence width (0 = auto):", 0)
+
+        set _command to _command & " -s " & _start
+        set _command to _command & " -w " & _width
+        set _command to _command & " -P " & quoted form of _prefix
+        set _command to _command & " -S " & quoted form of _suffix
+
+        repeat with _file in _files
+            set _command to _command & " " & quoted form of (POSIX path of (_file as alias))
         end repeat
-        set renamedFilenames to paragraphs of (do shell script renameCommand)
-        set renamedFiles to {}
-        repeat with renamedFilename in renamedFilenames
-            set end of renamedFiles to (my POSIX file renamedFilename)
-        end repeat
-        reveal renamedFiles
+
+        reveal my paths_to_files(paragraphs of (do shell script _command))
     end tell
+
 end rename_sequence
 
+on open (_files)
+    rename_sequence(_files)
+end open
+
+on run
+    tell application "Finder" to set _files to selection
+    rename_sequence(_files)
+end run
