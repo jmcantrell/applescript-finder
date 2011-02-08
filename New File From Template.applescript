@@ -49,5 +49,9 @@ on run
 
         do shell script _command
 
+        activate
+
+        reveal my POSIX file _filename
+
     end tell
 end run
