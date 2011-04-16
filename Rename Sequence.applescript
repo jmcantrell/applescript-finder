@@ -25,14 +25,14 @@ on get_number(_prompt, _default)
     return _number
 end get_number
 
-on rename_sequence(_files)
+on rename_seq(_files)
 
     if count of _files equals 0 then return
 
     tell application "Finder"
         display dialog "Are you sure you want to rename these " & (count of _files) & " files?" with icon caution
 
-        set _command to "rename-sequence"
+        set _command to "rename-seq"
 
         set _start to my get_number("Enter start number:", 1)
         set _prefix to (display dialog "Enter prefix:" default answer "" with icon note)
@@ -51,13 +51,13 @@ on rename_sequence(_files)
         reveal my paths_to_files(paragraphs of (do shell script _command))
     end tell
 
-end rename_sequence
+end rename_seq
 
 on open (_files)
-    rename_sequence(_files)
+    rename_seq(_files)
 end open
 
 on run
     tell application "Finder" to set _files to selection
-    rename_sequence(_files)
+    rename_seq(_files)
 end run
