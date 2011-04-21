@@ -18,6 +18,14 @@ on paths_to_files(_paths)
     return _files
 end paths_to_files
 
+on quote_paths(_files)
+    set _paths to ""
+    repeat with _file in _files
+        set _paths to _paths & " " & quoted form of (POSIX path of (_file as alias))
+    end repeat
+    return _paths
+end quote_paths
+
 on rename_case(_files)
 
     set _files to regular_files(_files)
@@ -35,9 +43,7 @@ on rename_case(_files)
 
         set _command to _command & " -C " & _case
 
-        repeat with _file in _files
-            set _command to _command & " " & quoted form of (POSIX path of (_file as alias))
-        end repeat
+        set _command to _command & " " & my quote_paths(_files)
 
         reveal my paths_to_files(paragraphs of (do shell script _command))
     end tell

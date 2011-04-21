@@ -24,6 +24,14 @@ on get_filename(_prompt, _default)
     set _filename to _folder & _name
 end get_filename
 
+on quote_paths(_files)
+    set _paths to ""
+    repeat with _file in _files
+        set _paths to _paths & " " & quoted form of (POSIX path of (_file as alias))
+    end repeat
+    return _paths
+end quote_paths
+
 on move_to_folder(_files)
 
     if (count of _files) is equal to 0 then return
@@ -33,9 +41,7 @@ on move_to_folder(_files)
 
     do shell script "mkdir -p " & quoted form of _folder
 
-    repeat with _file in _files
-        do shell script "mv " & quoted form of (POSIX path of (_file as alias)) & " " & quoted form of _folder
-    end repeat
+    do shell script "mv " & my quote_paths(_files) & " " & quoted form of _folder
 
 end move_to_folder
 

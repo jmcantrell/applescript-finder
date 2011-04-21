@@ -16,7 +16,7 @@ on get_required(_prompt, _default)
 end get_required
 
 on get_input(_prompt, _default)
-    display dialog _prefix & _prompt default answer _default with icon note
+    display dialog _prompt default answer _default with icon note
     return text returned of result
 end get_required
 
@@ -27,6 +27,14 @@ on paths_to_files(_paths)
     end repeat
     return _files
 end paths_to_files
+
+on quote_paths(_files)
+    set _paths to ""
+    repeat with _file in _files
+        set _paths to _paths & " " & quoted form of (POSIX path of (_file as alias))
+    end repeat
+    return _paths
+end quote_paths
 
 on rename_sub(_files)
 
@@ -43,9 +51,7 @@ on rename_sub(_files)
         set _command to _command & " -P " & quoted form of _pattern
         set _command to _command & " -R " & quoted form of _replace
 
-        repeat with _file in _files
-            set _command to _command & " " & quoted form of (POSIX path of (_file as alias))
-        end repeat
+        set _command to _command & " " & my quote_paths(_files)
 
         reveal my paths_to_files(paragraphs of (do shell script _command))
     end tell

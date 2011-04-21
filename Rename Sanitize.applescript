@@ -6,6 +6,14 @@ on paths_to_files(_paths)
     return _files
 end paths_to_files
 
+on quote_paths(_files)
+    set _paths to ""
+    repeat with _file in _files
+        set _paths to _paths & " " & quoted form of (POSIX path of (_file as alias))
+    end repeat
+    return _paths
+end quote_paths
+
 on rename_sanitize(_files)
 
     if count of _files equals 0 then return
@@ -13,11 +21,7 @@ on rename_sanitize(_files)
     tell application "Finder"
         display dialog "Are you sure you want to rename these " & (count of _files) & " files?" with icon caution
 
-        set _command to "rename-sanitize"
-
-        repeat with _file in _files
-            set _command to _command & " " & quoted form of (POSIX path of (_file as alias))
-        end repeat
+        set _command to "rename-sanitize " & my quote_paths(_files)
 
         set _new_files to paragraphs of (do shell script _command)
 
