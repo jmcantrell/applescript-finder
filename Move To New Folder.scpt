@@ -2,7 +2,7 @@ on get_required(_prompt, _default)
     set _prefix to ""
     set _icon to note
     repeat
-        display dialog _prefix & _prompt default answer _default with icon _icon
+        tell application "Finder" to display dialog _prefix & _prompt default answer _default with icon _icon
         set _reply to text returned of result
         try
             if _reply = "" then error

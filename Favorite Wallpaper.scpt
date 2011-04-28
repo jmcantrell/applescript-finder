@@ -1,6 +1,6 @@
 on set_favorites(_files)
-    display dialog "Are you sure you want to add these " & (length of _files) & " wallpapers?" with icon caution
     tell application "Finder"
+        display dialog "Are you sure you want to add these " & (length of _files) & " wallpapers?" with icon caution
         set _folder to folder "Wallpapers" of folder "Dropbox" of home
         repeat with _file in _files
             if kind of _file ends with " image" then

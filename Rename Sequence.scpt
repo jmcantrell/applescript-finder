@@ -7,7 +7,7 @@ on paths_to_files(_paths)
 end paths_to_files
 
 on get_input(_prompt, _default)
-    display dialog _prefix & _prompt default answer _default with icon note
+    tell application "Finder" to display dialog _prefix & _prompt default answer _default with icon note
     return text returned of result
 end get_required
 
