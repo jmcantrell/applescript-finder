@@ -1,7 +1,7 @@
 on set_favorites(_files)
     tell application "Finder"
         display dialog "Are you sure you want to add these " & (length of _files) & " wallpapers?" with icon caution
-        set _folder to folder "Wallpapers" of folder "Dropbox" of home
+        set _folder to folder "16x10" of folder "Wallpapers" of folder "Dropbox" of home
         repeat with _file in _files
             if kind of _file ends with " image" then
                 duplicate _file to _folder
