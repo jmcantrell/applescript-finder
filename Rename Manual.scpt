@@ -1,15 +1,3 @@
-on regular_files(_files)
-    set _regular to {}
-    tell application "Finder"
-        repeat with _file in _files
-            if the URL of _file does not end with "/" then
-                set end of _regular to _file
-            end if
-        end repeat
-    end tell
-    return _regular
-end regular_files
-
 on paths_to_files(_paths)
     set _files to {}
     repeat with _path in _paths
@@ -28,7 +16,6 @@ end quote_paths
 
 on rename_case(_files)
 
-    set _files to regular_files(_files)
     if (count of _files) is equal to 0 then return
 
     tell application "Finder"
