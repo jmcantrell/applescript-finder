@@ -35,7 +35,7 @@ end get_filename
 on run
     tell application "Finder"
 
-        set templates_folder to (folder "templates" of folder "Code" of folder "Documents" of home)
+        set templates_folder to (folder "Templates" of folder "templates" of folder "Code" of home)
 
         set _template to my get_file(templates_folder, "Choose a template:")
         if _template is false then return
