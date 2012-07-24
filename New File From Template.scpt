@@ -1,57 +1,57 @@
-on get_required(_prompt, _default)
-    set _prefix to ""
-    set _icon to note
+on getRequiredInput(promptText, defaultValue)
+    set promptPrefix to ""
+    set promptIcon to note
     repeat
-        tell application "Finder" to display dialog _prefix & _prompt default answer _default with icon _icon
-        set _reply to text returned of result
+        tell application "Finder" to display dialog promptPrefix & promptText default answer defaultValue with icon promptIcon
+        set replyValue to text returned of result
         try
-            if _reply = "" then error
+            if replyValue = "" then error
             exit repeat
         on error
-            set _prefix to "INVALID ENTRY! "
-            set _icon to stop
+            set promptPrefix to "INVALID ENTRY! "
+            set promptIcon to stop
         end try
     end repeat
-    return _reply
-end get_required
+    return replyValue
+end
 
-on get_file(_folder, _prompt)
-    if _prompt is "" then set _prompt to "Choose a filename:"
-    set _names to (name of every file of _folder)
-    set _name to first item of (choose from list _names with prompt _prompt)
-    if _name is false then return false
-    return file _name of _folder
-end get_file
+on getFile(theFolder, promptText)
+    if promptText is "" then set promptText to "Choose a filename:"
+    set theNames to (name of every file of theFolder)
+    set theName to first item of (choose from list theNames with prompt promptText)
+    if theName is false then return false
+    return file theName of theFolder
+end
 
-on get_filename(_prompt, _default)
-    if _prompt is "" then set _prompt to "Enter filename:"
-    set _name to my get_required(_prompt, _default)
+on getFilenameInput(promptText, defaultValue)
+    if promptText is "" then set promptText to "Enter filename:"
+    set theName to my getRequiredInput(promptText, defaultValue)
     tell application "Finder"
-        set _folder to (POSIX path of (folder of front window as alias))
+        set theFolder to (POSIX path of (folder of front window as alias))
     end tell
-    set _filename to _folder & _name
-end get_filename
+    set theFilename to theFolder & theName
+end
 
 on run
     tell application "Finder"
 
-        set templates_folder to (folder "Templates" of folder "templates" of folder "Code" of home)
+        set templateFolder to (folder "Templates" of folder "templates" of folder "Code" of home)
 
-        set _template to my get_file(templates_folder, "Choose a template:")
-        if _template is false then return
+        set templateFile to my getFile(templateFolder, "Choose a template:")
+        if templateFile is false then return
 
-        set _filename to my get_filename("Enter filename:", name of _template)
-        if _filename is false then return
+        set theFilename to my getFilenameInput("Enter filename:", name of templateFile)
+        if theFilename is false then return
 
-        set _command to "temple"
-        set _command to _command & " -f " & quoted form of (POSIX path of (_template as alias))
-        set _command to _command & " " & quoted form of _filename
+        set renameCommand to "temple"
+        set renameCommand to renameCommand & " -f " & quoted form of (POSIX path of (templateFile as alias))
+        set renameCommand to renameCommand & " " & quoted form of theFilename
 
-        do shell script _command
+        do shell script renameCommand
 
         activate
 
-        reveal my POSIX file _filename
+        reveal my POSIX file theFilename
 
     end tell
-end run
+end

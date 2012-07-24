@@ -1,74 +1,74 @@
-on paths_to_files(_paths)
-    set _files to {}
-    repeat with _path in _paths
-        set end of _files to POSIX file _path
+on pathsToFiles(thePaths)
+    set theFiles to {}
+    repeat with thePath in thePaths
+        set end of theFiles to POSIX file thePath
     end repeat
-    return _files
-end paths_to_files
+    return theFiles
+end
 
-on get_input(_prompt, _default)
-    tell application "Finder" to display dialog _prefix & _prompt default answer _default with icon note
+on getInput(promptText, defaultValue)
+    tell application "Finder" to display dialog promptText default answer defaultValue with icon note
     return text returned of result
-end get_required
+end
 
-on get_number(_prompt, _default)
-    if _prompt = "" then set _prompt to "Enter number:"
-    set _prefix to ""
-    set _icon to note
+on getNumberInput(promptText, defaultValue)
+    if promptText = "" then set promptText to "Enter number:"
+    set promptPrefix to ""
+    set promptIcon to note
     repeat
-        display dialog _prefix & _prompt default answer _default with icon _icon
-        set _number to text returned of result
+        display dialog promptPrefix & promptText default answer defaultValue with icon promptIcon
+        set numberValue to text returned of result
         try
-            if _number = "" then error
-            set _number to _number as number
+            if numberValue = "" then error
+            set numberValue to numberValue as number
             exit repeat
         on error
-            set _prefix to "INVALID ENTRY! "
-            set _icon to stop
+            set promptPrefix to "INVALID ENTRY! "
+            set promptIcon to stop
         end try
     end repeat
-    return _number
-end get_number
+    return numberValue
+end
 
-on quote_paths(_files)
-    set _paths to ""
-    repeat with _file in _files
-        set _paths to _paths & " " & quoted form of (POSIX path of (_file as alias))
+on quotePaths(theFiles)
+    set thePaths to ""
+    repeat with theFile in theFiles
+        set thePaths to thePaths & " " & quoted form of (POSIX path of (theFile as alias))
     end repeat
-    return _paths
-end quote_paths
+    return thePaths
+end
 
-on rename_seq(_files)
+on renameFiles(theFiles)
 
-    if count of _files equals 0 then return
+    if count of theFiles equals 0 then return
 
     tell application "Finder"
-        display dialog "Are you sure you want to rename these " & (count of _files) & " files?" with icon caution
+        display dialog "Are you sure you want to rename these " & (count of theFiles) & " files?" with icon caution
 
-        set _command to "rename-seq"
+        set renameCommand to "rename-seq"
 
-        set _start to my get_number("Enter start number:", 1)
-        set _prefix to my get_input("Enter prefix:", "")
-        set _suffix to my get_input("Enter suffix:", "")
-        set _width to my get_number("Enter sequence width (0 = auto):", 0)
+        set startNumber to my getNumberInput("Enter start number:", 1)
+        set prefixText to my getInput("Enter prefix:", "")
+        set suffixText to my getInput("Enter suffix:", "")
+        set numberWidth to my getNumberInput("Enter sequence width (0 = auto):", 0)
 
-        set _command to _command & " -s " & _start
-        set _command to _command & " -w " & _width
-        set _command to _command & " -P " & quoted form of _prefix
-        set _command to _command & " -S " & quoted form of _suffix
+        set renameCommand to renameCommand & " -s " & startNumber
+        set renameCommand to renameCommand & " -w " & numberWidth
+        set renameCommand to renameCommand & " -P " & quoted form of prefixText
+        set renameCommand to renameCommand & " -S " & quoted form of suffixText
 
-        set _command to _command & " " & quote_paths(_files)
+        set renameCommand to renameCommand & " " & quotePaths(theFiles)
 
-        reveal my paths_to_files(paragraphs of (do shell script _command))
+        reveal my pathsToFiles(paragraphs of (do shell script renameCommand))
     end tell
 
-end rename_seq
+end
 
-on open (_files)
-    rename_seq(_files)
-end open
+on open (theFiles)
+    renameFiles(theFiles)
+end
 
 on run
-    tell application "Finder" to set _files to selection
-    rename_seq(_files)
-end run
+    tell application "Finder" to set theFiles to selection
+    renameFiles(theFiles)
+end

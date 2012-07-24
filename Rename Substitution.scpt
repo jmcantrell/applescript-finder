@@ -1,68 +1,68 @@
-on get_required(_prompt, _default)
-    set _prefix to ""
-    set _icon to note
+on getRequiredInput(promptText, defaultValue)
+    set promptPrefix to ""
+    set promptIcon to note
     repeat
-        tell application "Finder" to display dialog _prefix & _prompt default answer _default with icon _icon
-        set _reply to text returned of result
+        tell application "Finder" to display dialog promptPrefix & promptText default answer defaultValue with icon promptIcon
+        set replyValue to text returned of result
         try
-            if _reply = "" then error
+            if replyValue = "" then error
             exit repeat
         on error
-            set _prefix to "INVALID ENTRY! "
-            set _icon to stop
+            set promptPrefix to "INVALID ENTRY! "
+            set promptIcon to stop
         end try
     end repeat
-    return _reply
-end get_required
+    return replyValue
+end
 
-on get_input(_prompt, _default)
-    tell application "Finder" to display dialog _prompt default answer _default with icon note
+on getInput(promptText, defaultValue)
+    tell application "Finder" to display dialog promptText default answer defaultValue with icon note
     return text returned of result
-end get_required
+end
 
-on paths_to_files(_paths)
-    set _files to {}
-    repeat with _path in _paths
-        set end of _files to POSIX file _path
+on pathsToFiles(thePaths)
+    set theFiles to {}
+    repeat with thePath in thePaths
+        set end of theFiles to POSIX file thePath
     end repeat
-    return _files
-end paths_to_files
+    return theFiles
+end
 
-on quote_paths(_files)
-    set _paths to ""
-    repeat with _file in _files
-        set _paths to _paths & " " & quoted form of (POSIX path of (_file as alias))
+on quotePaths(theFiles)
+    set thePaths to ""
+    repeat with theFile in theFiles
+        set thePaths to thePaths & " " & quoted form of (POSIX path of (theFile as alias))
     end repeat
-    return _paths
-end quote_paths
+    return thePaths
+end
 
-on rename_sub(_files)
+on renameFiles(theFiles)
 
-    if count of _files equals 0 then return
+    if count of theFiles equals 0 then return
 
     tell application "Finder"
-        display dialog "Are you sure you want to rename these " & (count of _files) & " files?" with icon caution
+        display dialog "Are you sure you want to rename these " & (count of theFiles) & " files?" with icon caution
 
-        set _command to "rename-sub"
+        set renameCommand to "rename-sub"
 
-        set _pattern to my get_required("Enter pattern:", "")
-        set _replace to my get_input("Enter replacement:", "")
+        set pattern to my getRequiredInput("Enter pattern:", "")
+        set replacement to my getInput("Enter replacement:", "")
 
-        set _command to _command & " -P " & quoted form of _pattern
-        set _command to _command & " -R " & quoted form of _replace
+        set renameCommand to renameCommand & " -P " & quoted form of pattern
+        set renameCommand to renameCommand & " -R " & quoted form of replacement
 
-        set _command to _command & " " & my quote_paths(_files)
+        set renameCommand to renameCommand & " " & my quotePathes(theFiles)
 
-        reveal my paths_to_files(paragraphs of (do shell script _command))
+        reveal my pathsToFiles(paragraphs of (do shell script renameCommand))
     end tell
 
-end rename_sub
+end
 
-on open (_files)
-    rename_sub(_files)
-end open
+on open (theFiles)
+    renameFiles(theFiles)
+end
 
 on run
-    tell application "Finder" to set _files to selection
-    rename_sub(_files)
-end run
+    tell application "Finder" to set theFiles to selection
+    renameFiles(theFiles)
+end

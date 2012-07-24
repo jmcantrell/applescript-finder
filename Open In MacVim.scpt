@@ -1,8 +1,16 @@
-on run
-    tell application "Finder" to set _files to selection as alias list
-    set _command to "mvim"
-    repeat with _file in _files
-        set _command to _command & " " & quoted form of (POSIX path of _file)
+on openInMacvim(theFiles)
+    set openCommand to "mvim"
+    repeat with theFile in theFiles
+        set openCommand to openCommand & " " & quoted form of (POSIX path of theFile)
     end repeat
-    do shell script _command
-end run
+    do shell script openCommand
+end
+
+on run
+    tell application "Finder" to set theFiles to selection as alias list
+    openInMacvim(theFiles)
+end
+
+on open(theFiles)
+	openInMacvim(theFiles)
+end
