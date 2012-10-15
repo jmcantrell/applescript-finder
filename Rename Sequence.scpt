@@ -45,7 +45,8 @@ on renameFiles(theFiles)
     tell application "Finder"
         display dialog "Are you sure you want to rename these " & (count of theFiles) & " files?" with icon caution
 
-        set renameCommand to "rename-seq"
+        set homeFolder to POSIX path of (path to home folder) as string
+        set renameCommand to homeFolder & ".local/bin/rename-seq"
 
         set startNumber to my getNumberInput("Enter start number:", 1)
         set prefixText to my getInput("Enter prefix:", "")

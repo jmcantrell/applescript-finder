@@ -21,7 +21,8 @@ on renameFiles(theFiles)
     tell application "Finder"
         display dialog "Are you sure you want to rename these " & (count of theFiles) & " files?" with icon caution
 
-        set renameCommand to "rename-manual " & my quotePaths(theFiles)
+        set homeFolder to POSIX path of (path to home folder) as string
+        set renameCommand to homeFolder & ".local/bin/rename-manual " & my quotePaths(theFiles)
 
         reveal my pathsToFiles(paragraphs of (do shell script renameCommand))
     end tell

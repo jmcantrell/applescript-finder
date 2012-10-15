@@ -43,7 +43,8 @@ on run
         set theFilename to my getFilenameInput("Enter filename:", name of templateFile)
         if theFilename is false then return
 
-        set renameCommand to "temple"
+        set homeFolder to POSIX path of (path to home folder) as string
+        set renameCommand to homeFolder & ".local/bin/temple"
         set renameCommand to renameCommand & " -f " & quoted form of (POSIX path of (templateFile as alias))
         set renameCommand to renameCommand & " " & quoted form of theFilename
 

@@ -43,7 +43,8 @@ on renameFiles(theFiles)
     tell application "Finder"
         display dialog "Are you sure you want to rename these " & (count of theFiles) & " files?" with icon caution
 
-        set renameCommand to "rename-sub"
+        set homeFolder to POSIX path of (path to home folder) as string
+        set renameCommand to homeFolder & ".local/bin/rename-sub"
 
         set pattern to my getRequiredInput("Enter pattern:", "")
         set replacement to my getInput("Enter replacement:", "")

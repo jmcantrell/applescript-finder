@@ -34,7 +34,8 @@ on renameFiles(theFiles)
     tell application "Finder"
         display dialog "Are you sure you want to rename these " & (count of theFiles) & " files?" with icon caution
 
-        set renameCommand to "rename-case"
+        set homeFolder to POSIX path of (path to home folder) as string
+        set renameCommand to homeFolder & ".local/bin/rename-case"
 
         set availableCases to paragraphs of (do shell script renameCommand & " -L")
 

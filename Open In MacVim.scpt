@@ -1,5 +1,6 @@
 on openInMacvim(theFiles)
-    set openCommand to "mvim"
+    set homeFolder to POSIX path of (path to home folder) as string
+    set openCommand to homeFolder & ".local/bin/mvim"
     repeat with theFile in theFiles
         set openCommand to openCommand & " " & quoted form of (POSIX path of theFile)
     end repeat
@@ -12,5 +13,5 @@ on run
 end
 
 on open(theFiles)
-	openInMacvim(theFiles)
+    openInMacvim(theFiles)
 end
