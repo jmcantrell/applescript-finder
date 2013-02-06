@@ -5,7 +5,6 @@ end
 on openInIterm(theFolder)
     set wasRunning to isRunning("iTerm")
     tell application "iTerm"
-        activate
         tell the first terminal
             if wasRunning then
                 launch session "Default Session"
@@ -14,6 +13,7 @@ on openInIterm(theFolder)
                 write text "cd " & quoted form of POSIX path of theFolder
             end tell
         end tell
+        activate
     end tell
 end
 
